@@ -33,7 +33,8 @@ function maximizeplmdca(alg::PlmAlg, var::PlmVar)
     @extract alg method verbose epsconv maxit maxeval
     vecps = SharedArray{Float64}(N)
     x0 = fill(0.0,N)
-    Jscra = @distributed hcat for i in 1:N
+    Jscra = zeros(N,N)
+    for i in 1:N
         opt = Opt(method,N)
         ftol_abs!(opt, alg.epsconv)
         maxeval!(opt, maxit)
@@ -43,7 +44,7 @@ function maximizeplmdca(alg::PlmAlg, var::PlmVar)
         alg.verbose && println("exit status = $ret")
         #alg.verbose && println(maxJH[end-2], " ",maxJH[end-1]," ", maxJH[end], " ", mean(maxJH[1:2N-3]))
         vecps[i] = maxf
-        maxJH
+        Jscra[:,i] = maxJH
     end
     outJ,outh = unpack(Jscra)
     return outJ, outh, vecps
