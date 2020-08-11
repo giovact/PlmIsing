@@ -1,7 +1,6 @@
 module PlmIsing
 using NLopt
 using ExtractMacro
-using SharedArrays
 using Printf
 using DelimitedFiles
 

@@ -25,10 +25,5 @@ struct PlmVar
     N::Int
     lambdaJ::Float64
     lambdaH::Float64
-    spin::SharedArray{Float64,2}
-    function PlmVar(M,N,lambdaJ,lambdaH,spin)
-        s = SharedArray{Float64}(size(spin))
-        s[:] = spin
-        new(M,N,lambdaJ,lambdaH,s)
-    end
+    spin::Matrix{Int64}
 end
