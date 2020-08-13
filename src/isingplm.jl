@@ -11,7 +11,6 @@ function isingplm(spin::Matrix{Int};
     N,M = size(spin)
     plmalg = PlmAlg(method, verbose, epsconv, maxit, maxeval)
     plmvar = PlmVar(M, N, lambdaJ, lambdaH, spin)
-    println(size(plmvar.spin))
     outJ, outh, vecps=maximizeplmdca(plmalg,plmvar)
     return PlmOut(vecps,outJ,outh)
 
