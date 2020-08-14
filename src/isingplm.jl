@@ -11,8 +11,8 @@ function isingplm(spin::Matrix{Int};
     N,M = size(spin)
     plmalg = PlmAlg(method, verbose, epsconv, maxit, maxeval)
     plmvar = PlmVar(M, N, lambdaJ, lambdaH, spin)
-    outJ, outh, vecps=maximizeplmdca(plmalg,plmvar)
-    return PlmOut(vecps,outJ,outh)
+    outJ, outh, vecps, ret_v=maximizeplmdca(plmalg,plmvar)
+    return PlmOut(vecps,outJ,outh), ret_v
 
 end
 
@@ -32,6 +32,7 @@ function maximizeplmdca(alg::PlmAlg, var::PlmVar)
     @extract var M N lambdaJ lambdaH spin
     @extract alg method verbose epsconv maxit maxeval
     vecps = fill(0.0,N)
+    ret_v = Array{Symbol}(undef,N)
     x0 = fill(0.0,N)
     Jscra = zeros(N,N)
     for i in 1:N
@@ -45,9 +46,10 @@ function maximizeplmdca(alg::PlmAlg, var::PlmVar)
         #alg.verbose && println(maxJH[end-2], " ",maxJH[end-1]," ", maxJH[end], " ", mean(maxJH[1:2N-3]))
         vecps[i] = maxf
         Jscra[:,i] = maxJH
+        ret_v[i] = ret
     end
     outJ,outh = unpack(Jscra)
-    return outJ, outh, vecps
+    return outJ, outh, vecps, ret_v
 end
 
 function computeH(vecJ::Vector{Float64}, site::Int, spin, a::Int,  N::Int)
